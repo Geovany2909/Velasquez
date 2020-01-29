@@ -1,0 +1,451 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./Plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="content">
+        <div class="w3-main" style="margin-left:250px;margin-right:40px">
+            <header class="w3-container w3-xlarge w3-padding">
+                <h4 class="w3-left">Sistema de citas medicas</h4>
+                <h:form>
+                    <p class="w3-right">
+                        <h:commandLink action="#{usuarioBean.cerrarSesion()}"><i class="fa fa-sign-out w3-margin-right" title="Cerrar Sesion"></i></h:commandLink>
+                    </p>
+                </h:form>
+            </header>
+
+            <div class="w3-container">
+                <h1 class="w3-xxxlarge w3-text-teal"><b>Usuarios de la clinica</b></h1>
+            </div>
+            <!--Aca es donde se encuentra el menu de registro -->
+            <div id="id01" class="w3-modal">
+                <div class="w3-modal-content w3-animate-zoom">
+                    <div class="w3-container">
+                        <span onclick="document.getElementById('id01').style.display = 'none'"
+                              class="w3-button w3-display-topright pi pi-times-circle"></span>
+                        <h2>Agregar Usuarios</h2>
+                        <h:form id="miFormulario" class="w3-margin-bottom" enctype="multipart/form-data">
+                            <h:panelGroup layout="block" styleClass="w3-panel w3-red" rendered="#{not empty facesContext.messageList}">   
+                                <h:messages/>
+                            </h:panelGroup>
+
+                            <h:inputHidden id="id"  value="#{usuarioBean.usuario.id}" />
+                            <div class="w3-section">
+                                <h:outputLabel for="nombres" value="Nombres:"/>
+                                <p:inputText type="text" value="#{usuarioBean.usuario.nombres}"
+                                             required="true" styleClass="w3-input w3-border" id="nombre" 
+                                             placeholder="Juan" requiredMessage="Debes Ingresar Un Nombre"
+                                             validatorMessage="Nombre Invalido"   
+                                             />
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="apellidos" value="Apellidos:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="horaI"  value="#{usuarioBean.usuario.apellidos}"
+                                             required="true" requiredMessage="Debes digitar los apellidos"
+                                             placeholder="Marquez Rivera"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="email" value="Correo Electronico:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="email"  value="#{usuarioBean.usuario.email}"
+                                             required="true" requiredMessage="Debes digitar el email" validatorMessage="email no valido"
+                                             placeholder="email@ejemplo.com">
+                                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                </p:inputText>
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="est" value="Tipo de Usuario:"/>
+                                <h:selectOneMenu required="true" requiredMessage="Debes de ingresar un tipo"
+                                                 styleClass="w3-input w3-border" value="#{usuarioBean.usuario.tipoUsuario.id}">
+                                    <f:selectItem itemValue="#{null}" itemLabel="Seleccione una opción..." />
+                                    <f:selectItems value="#{tipoUsuarioBean.listaTipoUsuarios}" var="t" itemLabel="#{t.tipoUsuario}"  itemValue="#{t.id}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="DNI" value="DNI:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="dni"  value="#{usuarioBean.usuario.dni}"
+                                             required="true" requiredMessage="Debes digitar el DNI" validatorMessage="DNI no valido"
+                                             placeholder="AAA123456A" maxlength="9">
+                                    <!--<f:validateRegex pattern="/^[a-z]{3}[0-9]{6}[a-z]?$/i" />-->
+                                </p:inputText>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="genero" value="Genero:"/>
+                                <p:selectOneButton styleClass="w3-input w3-border" value="#{usuarioBean.usuario.sexo}" required="true"
+                                                   requiredMessage="Escoge tu genero">
+                                    <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                    <f:selectItem itemLabel="Femenino" itemValue="F" />
+                                    <f:selectItem itemLabel="Otros" itemValue="O" />
+                                </p:selectOneButton>
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="fecha" value="Nacimiento:"/>
+                                <p:calendar id="fecha" value="#{usuarioBean.usuario.fechaNacimiento}" 
+                                            locale="es" requiredMessage="Debes de agregar tu fecha"
+                                            placeholder="00-00-0000" navigator="true" 
+                                            pattern="yyyy-MMM-dd" showTodayButton="true"/>
+
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="telefono" value="Telefono:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="telefono"  value="#{usuarioBean.usuario.telefono}"
+                                             required="true" maxlength="10" requiredMessage="Debes digitar el telefono" validatorMessage="telefono no valido"
+                                             placeholder="123567890">
+                                    <f:validateRegex pattern="^([+]?[\d]+)?$" />
+                                </p:inputText>
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="estado" value="Estado Civil"/>
+                                <p:selectOneButton styleClass="w3-input w3-border" value="#{usuarioBean.usuario.estadoCivil}" required="true"
+                                                   requiredMessage="Escoge un estado civil">
+                                    <f:selectItem itemLabel="Soltero/a" itemValue="soltero/a" />
+                                    <f:selectItem itemLabel="Casado/a" itemValue="casado/a" />
+                                    <f:selectItem itemLabel="Viudo/a" itemValue="viudo/a" />
+                                </p:selectOneButton>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="Domicilio" value="Domicilio:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="domicilio"  value="#{usuarioBean.usuario.domicilio}"
+                                             required="true" requiredMessage="Debes digitar el domicilio"
+                                             placeholder="lugar 4ta calle, casa"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="alergias" value="Alergias:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="alergias"  value="#{usuarioBean.usuario.alergias}"
+                                             required="false"
+                                             placeholder="alergia"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="genero" value="Especialidad"/>
+                                <p:selectOneButton styleClass="w3-input w3-border" value="#{usuarioBean.usuario.especialidad}"
+                                                   required="false">
+                                    <f:selectItem itemLabel="Ortesis General" itemValue="Ortesis General" />
+                                    <f:selectItem itemLabel="Ortesis Especial" itemValue="Ortesis especial" />
+                                    <f:selectItem itemLabel="Protesis Superior" itemValue="Protesis Superior" />
+                                    <f:selectItem itemLabel="Protesis Inferior" itemValue="Protesis Inferior" />
+                                </p:selectOneButton>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel value="Nueva Contraseña:" for="NewPass1"/>
+                                <h:inputSecret id="contrasena"  styleClass="form-control"
+                                               required="true"
+                                               value="#{usuarioBean.usuario.contrasenia}"
+                                               requiredMessage="Debe ingresar una contraseña"
+                                               validatorMessage="Longitud minima: 8 Caracteres">
+                                    <!-- <f:validateRegex pattern="^[ñA-Za-z0-9]{8,}$"/>  -->
+                                </h:inputSecret>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="imagen" value="Agrega Una Imagen:"/>  <span style="font-family: fantasy; color: red;">(Si dejas vacio se insertara una imagen por defecto)</span>
+                                <br/>
+                                <h:inputFile id="imagen" styleClass="form-control "  value="#{usuarioBean.fileUpload}"/>
+                            </div>
+
+                            <h:commandButton id="guardar" value="Guardar Usuario" styleClass="w3-button w3-green"  action="#{usuarioBean.addUsuario()}" style="margin-right: 10px;" >
+                                <f:ajax execute="@form" render=":miFormulario"/>
+                            </h:commandButton>
+
+                            <h:commandButton type="reset" value="Limpiar" styleClass="w3-button w3-red" />
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+            <br/>
+            <!-- Boton de agregar y busqueda -->
+            <h:form class="w3-margin-bottom">
+                <div class="w3-half">
+                    <h:inputText class="w3-input w3-border"></h:inputText> 
+                </div>
+                <div class="w3-half">
+                    <p:commandButton onclick="modal()" class="w3-button w3-teal w3-margin-left pi pi-user-plus" value="Agregar usuario"></p:commandButton>
+                </div>
+            </h:form>
+            <br/>
+
+
+            <!--Aca es donde se enlistan los productos -->
+            <h:form class="w3-margin-top">
+                <h:dataTable styleClass="w3-table w3-striped w3-bordered w3-border w3-hoverable w3-white" value="#{usuarioBean.listaUsuarios}"
+                             var="u" rendered="#{usuarioBean.listaUsuarios.size()>0}">
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Nombre"/>
+                        </f:facet>
+                        <h:outputText value="#{u.nombres}"/> 
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Apellidos"/>
+                        </f:facet>
+                        <h:outputText value="#{u.apellidos}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Email"/>
+                        </f:facet>
+                        <h:outputText value="#{u.email}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Tipo:"/>
+                        </f:facet>
+                        <h:outputText value="#{u.tipoUsuario.tipoUsuario}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="DNI"/>
+                        </f:facet>
+                        <h:outputText value="#{u.dni}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Genero"/>
+                        </f:facet>
+                        <h:outputText value="#{u.sexo}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Nacimiento"/>
+                        </f:facet>
+                        <h:outputText value="#{u.fechaNacimiento}">
+                            <f:convertDateTime pattern="yyyy-MM-dd"/>
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Telefono"/>
+                        </f:facet>
+                        <h:outputText value="#{u.telefono}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Estado Civil"/>
+                        </f:facet>
+                        <h:outputText value="#{u.estadoCivil}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Domicilio"/>
+                        </f:facet>
+                        <h:outputText value="#{u.domicilio}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Alergia"/>
+                        </f:facet>
+                        <h:outputText value="#{u.alergias}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Especialidad:"/>
+                        </f:facet>
+                        <h:outputText value="#{u.especialidad}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Contraseña"/>
+                        </f:facet>
+                        <h:outputText value="#{u.contrasenia}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Foto"/>
+                        </f:facet>
+                        <img src="data:image/png;base64,#{usuarioBean.displayImagen(u.foto)}" width="150" height="130"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputLabel value="Operaciones"/>
+                        </f:facet>
+                        <h:commandLink onclick="modalEditar()" styleClass="fa fa-edit w3-button w3-gray w3-hover-black">
+                            <f:ajax event="click" listener="#{usuarioBean.findUsuariosById(u.id)}" render=":miFormularioE" />
+                        </h:commandLink> 
+                        &nbsp;
+                        <h:commandLink styleClass="w3-margin-right fa fa-trash w3-button w3-red w3-hover-black" action="#{usuarioBean.deleteUsuarios()}" 
+                                       onclick="return confirmarEliminacion();"> 
+                            <f:param name="id" value="#{u.id}" />
+                        </h:commandLink>  
+                    </h:column>
+                </h:dataTable>
+            </h:form>
+            <!--Este es el modal en el que se cargan los datos para editarlos-->
+            <div id="id02" class="w3-modal">
+                <div class="w3-modal-content w3-animate-zoom">
+                    <div class="w3-container">
+                        <span onclick="document.getElementById('id02').style.display = 'none'"
+                              class="w3-button w3-display-topright ">&times;</span>
+                        <h2>Editar Usuario Seleccionado</h2>
+                        <h:form id="miFormularioE" class="w3-margin-bottom" enctype="multipart/form-data">
+                            <h:panelGroup layout="block" styleClass="w3-panel w3-red" rendered="#{not empty facesContext.messageList}">   
+                                <h:messages/>
+                            </h:panelGroup>
+
+                            <h:inputHidden id="id"  value="#{usuarioBean.usuario.id}" />
+                            <div class="w3-section">
+                                <h:outputLabel for="nombres" value="Nombres:"/>
+                                <p:inputText type="text" value="#{usuarioBean.usuario.nombres}"
+                                             required="true" styleClass="w3-input w3-border" id="nombre" 
+                                             placeholder="Juan" requiredMessage="Debes Ingresar Un Nombre"
+                                             validatorMessage="Nombre Invalido"   
+                                             />
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="apellidos" value="Apellidos:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="horaI"  value="#{usuarioBean.usuario.apellidos}"
+                                             required="true" requiredMessage="Debes digitar los apellidos"
+                                             placeholder="Marquez Rivera"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="email" value="Correo Electronico:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="email"  value="#{usuarioBean.usuario.email}"
+                                             required="true" requiredMessage="Debes digitar el email" validatorMessage="email no valido"
+                                             placeholder="ejemplo@ejemplo.com">
+                                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                </p:inputText>
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="est" value="Tipo de Usuario:"/>
+                                <h:selectOneMenu required="true" requiredMessage="Debes de ingresar un tipo"
+                                                 styleClass="w3-input w3-border" value="#{usuarioBean.usuario.tipoUsuario.id}">
+                                    <f:selectItem itemValue="#{null}" itemLabel="Seleccione una opción..." />
+                                    <f:selectItems value="#{tipoUsuarioBean.listaTipoUsuarios}" var="t" itemLabel="#{t.tipoUsuario}"  itemValue="#{t.id}" />
+                                </h:selectOneMenu>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="DNI" value="DNI:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="dni"  value="#{usuarioBean.usuario.dni}"
+                                             required="true" requiredMessage="Debes digitar el DNI" validatorMessage="DNI no valido"
+                                             placeholder="AAA123456A">
+                                    <!--<f:validateRegex pattern="/^[a-z]{3}[0-9]{6}[a-z]?$/i" />-->
+                                </p:inputText>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="genero" value="Genero:"/>
+                                <p:selectOneButton styleClass="w3-input w3-border" value="#{usuarioBean.usuario.sexo}" required="true"
+                                                   requiredMessage="Escoge tu genero">
+                                    <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                    <f:selectItem itemLabel="Femenino" itemValue="F" />
+                                    <f:selectItem itemLabel="Otros" itemValue="O" />
+                                </p:selectOneButton>
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="fecha" value="Nacimiento:"/>
+                                <p:calendar id="fecha" value="#{usuarioBean.usuario.fechaNacimiento}" 
+                                            locale="es" requiredMessage="Debes de agregar tu fecha"
+                                            placeholder="00-00-0000" navigator="true" 
+                                            pattern="yyyy-MMM-dd" showTodayButton="true"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="telefono" value="Telefono:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="telefono"  value="#{usuarioBean.usuario.telefono}"
+                                             required="true" requiredMessage="Debes digitar el telefono" validatorMessage="telefono no valido"
+                                             placeholder="123567890">
+                                    <f:validateRegex pattern="^([+]?[\d]+)?$" />
+                                </p:inputText>
+                            </div>
+
+                            <div class="w3-section">
+                                <h:outputLabel for="estado" value="Estado Civil"/>
+                                <p:selectOneButton styleClass="w3-input w3-border" value="#{usuarioBean.usuario.estadoCivil}" required="true"
+                                                   requiredMessage="Escoge un estado civil">
+                                    <f:selectItem itemLabel="Soltero/a" itemValue="soltero/a" />
+                                    <f:selectItem itemLabel="Casado/a" itemValue="casado/a" />
+                                    <f:selectItem itemLabel="Viudo/a" itemValue="viudo/a" />
+                                </p:selectOneButton>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="Domicilio" value="Domicilio:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="domicilio"  value="#{usuarioBean.usuario.domicilio}"
+                                             required="true" requiredMessage="Debes digitar el domicilio"
+                                             placeholder="lugar 4ta calle, casa"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="alergias" value="Alergias:"/>
+                                <p:inputText type="text" styleClass="w3-input w3-border" 
+                                             id="alergias"  value="#{usuarioBean.usuario.alergias}"
+                                             required="false"
+                                             placeholder="alergia"/>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="genero" value="Especialidad"/>
+                                <p:selectOneButton styleClass="w3-input w3-border" value="#{usuarioBean.usuario.especialidad}"
+                                                   required="false">
+                                    <f:selectItem itemLabel="Ortesis General" itemValue="Ortesis General" />
+                                    <f:selectItem itemLabel="Ortesis Especial" itemValue="Ortesis especial" />
+                                    <f:selectItem itemLabel="Protesis Superior" itemValue="Protesis Superior" />
+                                    <f:selectItem itemLabel="Protesis Inferior" itemValue="Protesis Inferior" />
+                                </p:selectOneButton>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel value="Nueva Contraseña:" for="NewPass1"/>
+                                <h:inputSecret id="contrasena"  styleClass="form-control"
+                                               required="true"
+                                               value="#{usuarioBean.usuario.contrasenia}"
+                                               requiredMessage="Debe ingresar una contraseña"
+                                               validatorMessage="Longitud minima: 8 Caracteres">
+                                    <f:validateRegex pattern="^[ñA-Za-z0-9]{8,}$"/>  
+                                </h:inputSecret>
+                            </div>
+                            <div class="w3-section">
+                                <h:outputLabel for="imagen" value="Agrega Una Imagen:"/>  <span style="font-family: fantasy; color: red;">(Si dejas vacio se insertara una imagen por defecto)</span>
+                                <br/>
+                                <h:inputFile id="imagen" styleClass="form-control "  value="#{usuarioBean.fileUpload}"/>
+                            </div>
+
+                            <h:commandButton id="guardar" value="Editar Usuario" styleClass="w3-button w3-green"  action="#{usuarioBean.updateUsuarios()}" style="margin-right: 10px;" >
+                                <f:ajax execute="@form" render=":miFormulario"/>
+                            </h:commandButton>
+
+                            <h:commandButton type="reset" value="Limpiar" styleClass="w3-button w3-red" />
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+            <br/><br/><br/><br/><br/><br/>
+        </div>
+
+        <h:outputScript>
+            <c:if test = "#{not empty flash.exito}" >
+                alertify.success('#{flash.exito}');
+            </c:if>
+
+            function modal(){
+            document.getElementById('id01').style.display = 'block';
+            }
+            function modalEditar(){
+            document.getElementById('id02').style.display = 'block';
+            }
+
+            function confirmarEliminacion(){
+            return confirm("¿Está seguro que desea eliminar el producto?");
+            }
+        </h:outputScript> 
+
+    </ui:define>
+</ui:composition>
